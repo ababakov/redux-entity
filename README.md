@@ -1,0 +1,2 @@
+# redux-entity
+Small framework 
