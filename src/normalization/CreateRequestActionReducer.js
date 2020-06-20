@@ -6,9 +6,6 @@ export class CreateRequestActionReducer extends BaseRequestActionReducer {
 
     updateDB(db, entry) {
       db = db || {}
-      if(!entry) {
-        console.error('Update DB: Entry is empty')
-      }
       db[entry.id] = { ...entry, ...this.default }
       entry.parentId && (entry.parent = db[entry.parentId])
       return db

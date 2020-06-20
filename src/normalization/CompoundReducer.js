@@ -12,10 +12,6 @@ export class CompoundReducer {
     this.initialState = initialState
   }
 
-  add(reducer) {
-    this.reducers.push(reducer)
-  }
-
   handle(state, action) {
     let result = state || this.initialState;
     for(let i = 0; i < this.reducers.length; i++) {
@@ -26,7 +22,6 @@ export class CompoundReducer {
       if(r && r.handle) {
         result = r.handle(result, action) || result;
       }
-      // if(result) return result
     }
     return result;
   }
