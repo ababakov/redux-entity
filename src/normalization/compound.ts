@@ -1,4 +1,4 @@
-export class CompoundReducer {
+export default class CompoundHandler {
   constructor(options) {
     const { initialState, defaultOptions, reducers } = options;
 

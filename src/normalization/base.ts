@@ -1,5 +1,10 @@
-export class BaseRequestActionReducer {
-  constructor(options) {
+import RequestActionHandlerOptions from '../models/options'
+import RequestActionHandler from '../models/handler'
+
+export default class BaseHandler implements RequestActionHandler {
+  options: RequestActionHandlerOptions
+
+  constructor(options: any) {
     this.options = { 
       loading: false,
       mixin: {},

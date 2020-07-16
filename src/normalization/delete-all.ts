@@ -1,6 +1,6 @@
-import { BaseRequestActionReducer } from './BaseRequestActionReducer'
+import BaseRequestActionReducer from './BaseRequestActionReducer'
 
-export class DeleteAllRequestActionReducer extends BaseRequestActionReducer {
+export default class DeleteAllRequestActionReducer extends BaseRequestActionReducer {
 
   success(state, action) {
     if(action.response && action.response.result) {

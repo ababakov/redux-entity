@@ -4,13 +4,17 @@ import {
   ListRequestActionReducer,
   CreateRequestActionReducer,
   DeleteRequestActionReducer
-} from "./common";
+} from "./normalization";
 
 import reduxStore from './decorators/reduxStore';
 import { get, post, del, patch } from './decorators/reduxAction';
 
 export class CrudEntity {
-  constructor(name, uri, options = {}) {
+  private name:String
+  private uri:String
+  private options:any
+
+  constructor(name, uri, options:any = {}) {
     this.name = name;
     this.uri = uri || '',
     this.options = {

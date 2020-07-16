@@ -1,8 +1,6 @@
-import { 
-  BaseRequestActionReducer
-} from './BaseRequestActionReducer'
+import BaseRequestActionReducer from './BaseRequestActionReducer'
 
-export class CreateRequestActionReducer extends BaseRequestActionReducer {
+export default class CreateRequestActionReducer extends BaseRequestActionReducer {
 
     updateDB(db, entry) {
       db = db || {}
