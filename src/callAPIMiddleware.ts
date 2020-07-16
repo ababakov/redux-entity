@@ -160,10 +160,7 @@ const callAPIMiddleware:(options: any) => any =
       }
 
       // loading start
-      dispatch({
-        type,
-        payload
-      });
+      dispatch({ type, payload });
 
       let input = resolveRequestInput(action, state);
       const queryParams = resolveQueryParams(action, state);
@@ -175,11 +172,13 @@ const callAPIMiddleware:(options: any) => any =
       const body = getBody(method, queryParams, format);
       const headers = resolveHeaders(action, state);
 
-      return fetch(input, {
+      const init = {
         method,
         headers,
         body
-      })
+      }
+
+      return fetch(input, init)
         .then(preprocessResponse())
         .then(processResponse(dispatch, { payload, type }))
         .catch(processError(dispatch, { payload, type }));

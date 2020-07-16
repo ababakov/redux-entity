@@ -4,7 +4,8 @@
   "description": "small framework to reduce action name generation work for CRUD operation in Restful",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/ababakov/redux-entity/issues"
   },
-  "homepage": "https://github.com/ababakov/redux-entity#readme"
+  "homepage": "https://github.com/ababakov/redux-entity#readme",
+  "devDependencies": {
+    "typescript": "^3.9.6"
+  }
 }
