@@ -33,6 +33,9 @@ export function isClass(fn:any) {
     return false
   }
 
+  console.log(toString.call(fn))
+
+
   if (/^class[\s{]/.test(toString.call(fn))) {
     return true
   }
