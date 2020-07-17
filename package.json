@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "small framework to reduce action name generation work for CRUD operation in Restful",
   "main": "index.js",
+  "files": ["lib/**/*"]
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
     "build": "tsc"
   },
   "repository": {
@@ -25,6 +28,9 @@
   },
   "homepage": "https://github.com/ababakov/redux-entity#readme",
   "devDependencies": {
+    "prettier": "^2.0.5",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.6"
   },
   "dependencies": {

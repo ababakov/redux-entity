@@ -1,27 +1,26 @@
-import BaseRequestActionReducer from './BaseRequestActionReducer'
+import BaseRequestActionReducer from './base';
 
 export default class DeleteAllRequestActionReducer extends BaseRequestActionReducer {
-
   success(state, action) {
-    if(action.response && action.response.result) {
-      let {db, list} = state
-      action.response.result.forEach(id => {
-        if(db[id]) {
-          delete db[id]
+    if (action.response && action.response.result) {
+      let { db, list } = state;
+      action.response.result.forEach((id) => {
+        if (db[id]) {
+          delete db[id];
         }
-        const index = list.findIndex(i => i.id == id)
-        if(index >= 0) {
-          list.splice(index, 1)
+        const index = list.findIndex((i) => i.id == id);
+        if (index >= 0) {
+          list.splice(index, 1);
         }
-      })
+      });
       return {
         ...super.success(state, action),
         db,
         list,
-      }
-    } else 
+      };
+    } else
       return {
         ...super.success(state, action),
-      }
+      };
   }
 }

@@ -1,4 +1,4 @@
 export default interface RequestActionHandlerOptions {
-  loading: boolean
-  mixin: any
+  loading: Boolean;
+  mixin: any;
 }

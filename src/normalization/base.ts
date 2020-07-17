@@ -1,32 +1,33 @@
-import RequestActionHandlerOptions from '../models/options'
-import RequestActionHandler from '../models/handler'
+import RequestActionHandlerOptions from '../models/options';
+import RequestActionHandler from '../models/handler';
 
 export default class BaseHandler implements RequestActionHandler {
-  options: RequestActionHandlerOptions
+  options: RequestActionHandlerOptions;
 
   constructor(options: any) {
-    this.options = { 
+    this.options = {
       loading: false,
       mixin: {},
-      ...options
+      ...options,
     };
   }
 
   check(action) {
     const { type } = this.options;
-    return typeof type === 'string' && action.type === type ||
-       Array.isArray(type) && type.indexOf(action.type) > -1;
+    return (
+      (typeof type === 'string' && action.type === type) || (Array.isArray(type) && type.indexOf(action.type) > -1)
+    );
   }
 
   handle(state, action) {
-    if(this.check(action)) {
-      switch(action.status) {
+    if (this.check(action)) {
+      switch (action.status) {
         case 'success':
-          return this.success(state, action)
+          return this.success(state, action);
         case 'error':
-          return this.failure(state, action)
+          return this.failure(state, action);
         default:
-          return this.request(state, action)
+          return this.request(state, action);
       }
     }
     return { ...state, ...this.options.state };
@@ -34,7 +35,7 @@ export default class BaseHandler implements RequestActionHandler {
 
   modify(i) {
     const { modifier } = this.options;
-    if(!modifier) return i;
+    if (!modifier) return i;
     return Array.isArray(i) ? i.map(modifier) : modifier(i);
   }
 
@@ -48,8 +49,8 @@ export default class BaseHandler implements RequestActionHandler {
       ...state,
       prevPayload: action.payload,
       loading: false,
-      ...this.getMixin(state, action)
-    }
+      ...this.getMixin(state, action),
+    };
   }
 
   failure(state, action) {
@@ -58,8 +59,8 @@ export default class BaseHandler implements RequestActionHandler {
       prevPayload: action.payload,
       loading: false,
       error: this.options.error,
-      ...this.getMixin(state, action)
-    }
+      ...this.getMixin(state, action),
+    };
   }
 
   request(state, action) {
@@ -68,7 +69,7 @@ export default class BaseHandler implements RequestActionHandler {
       prevPayload: action.payload,
       loading: this.options.loading,
       error: null,
-      ...this.getMixin(state, action)
-    }
+      ...this.getMixin(state, action),
+    };
   }
 }

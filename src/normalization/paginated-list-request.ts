@@ -1,10 +1,10 @@
-import { ListRequestActionReducer } from './ListRequestActionReducer'
+import ListRequestActionReducer from './list-request';
 
-export class PaginatedListRequestActionReducer extends ListRequestActionReducer {
+export default class PaginatedListRequestActionReducer extends ListRequestActionReducer {
   constructor(options) {
     super({
       flat: false,
-      ...options
+      ...options,
     });
   }
 
@@ -13,15 +13,13 @@ export class PaginatedListRequestActionReducer extends ListRequestActionReducer 
     const { count } = action.response;
     const offset = (page - 1) * page_size;
     const list = this.options.flat ? action.response : action.response[this.options.key];
-    let stateList =  state[this.options.stateKey] && list.length > 0 ? state[this.options.stateKey].slice(0, count) : [];
-    
-    for(let i = 0; i < list.length; i++) {
+    let stateList = state[this.options.stateKey] && list.length > 0 ? state[this.options.stateKey].slice(0, count) : [];
+
+    for (let i = 0; i < list.length; i++) {
       stateList[i + offset] = list[i];
     }
-    
-    return this
-      .modify(stateList)
-      .map(i => ({...i, ...this.options.default}));
+
+    return this.modify(stateList).map((i) => ({ ...i, ...this.options.default }));
   }
 
   success(state, action) {
@@ -36,8 +34,7 @@ export class PaginatedListRequestActionReducer extends ListRequestActionReducer 
       page_size: +page_size,
       pages_count: Math.ceil(count / page_size),
       [this.options.stateKey]: list,
-      ...this.options.mixin
-    }
+      ...this.options.mixin,
+    };
   }
 }
-

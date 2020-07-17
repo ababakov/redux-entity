@@ -5,7 +5,7 @@ const APPLICATION_JSON = 'application/json';
 
 const dataConverters = {
   json: JSON.stringify,
-  multipart: jsonToFormData
+  multipart: jsonToFormData,
 };
 
 function getQueryParams(qdata) {
@@ -39,17 +39,16 @@ function prepareResponse(response) {
 
 // TODO: Move to configuration?
 const preprocessResponse = () => (response) => {
-  switch(response.status) {
+  switch (response.status) {
     case 401:
     case 404:
       return Promise.reject();
     case 400:
-      return response.json()
-        .then(body => Promise.reject(body));
+      return response.json().then((body) => Promise.reject(body));
     case 403:
     case 409:
       return response.json();
-    case 204: 
+    case 204:
       return Promise.resolve({});
   }
 
@@ -58,38 +57,38 @@ const preprocessResponse = () => (response) => {
   }
 
   return prepareResponse(response);
-}
+};
 
-const processResponse = (dispatch, mixin) => response => {
+const processResponse = (dispatch, mixin) => (response) => {
   if (response.error) {
     return dispatch({
       error: response.error,
       status: 'error',
       response: response.body,
-      ...mixin
+      ...mixin,
     });
   } else {
     return dispatch({
       response,
       status: 'success',
-      ...mixin
+      ...mixin,
     });
   }
-}
+};
 
-const processError = (dispatch, mixin) => result => {
+const processError = (dispatch, mixin) => (result) => {
   return dispatch({
     error: result.error,
     status: 'error',
-    ...mixin
+    ...mixin,
   });
-}
+};
 
 function defaultResolveRequestInput({ uri }, state) {
-  const result = typeof uri === 'function' ? uri(state) : `${uri}`
+  const result = typeof uri === 'function' ? uri(state) : `${uri}`;
 
-  if(typeof result !== 'string') {
-    throw Error("Resolve requestUri error");
+  if (typeof result !== 'string') {
+    throw Error('Resolve requestUri error');
   }
 
   return result;
@@ -101,88 +100,76 @@ function defaultResolveQueryParams({ data }, state) {
 
 function defaultResolveHeaders({ format }, state): any {
   function getAuthorization(token) {
-    return token ? { Authorization: `Token ${token}` } : {}
+    return token ? { Authorization: `Token ${token}` } : {};
   }
 
   const headersCases = {
     json: {
-      'Accept': APPLICATION_JSON,
+      Accept: APPLICATION_JSON,
       'Content-Type': APPLICATION_JSON,
-      'Pragma': 'no-cache',
+      Pragma: 'no-cache',
     },
     multipart: {
-      'Pragma': 'no-cache'
-    }
+      Pragma: 'no-cache',
+    },
   };
 
   return {
     ...headersCases[format],
-    ...getAuthorization(state.Session.token)
-  }
+    ...getAuthorization(state.Session.token),
+  };
 }
 
 const defaultOptions = {
   resolveHeaders: defaultResolveHeaders,
   resolveRequestInput: defaultResolveRequestInput,
-  resolveQueryParams: defaultResolveQueryParams
+  resolveQueryParams: defaultResolveQueryParams,
 };
 
-const callAPIMiddleware:(options: any) => any = 
-  (options) => {
-    options = { ...defaultOptions, ...options };
+const callAPIMiddleware: (options: any) => any = (options) => {
+  options = { ...defaultOptions, ...options };
 
-    const {
-      resolveHeaders,
-      resolveQueryParams,
-      resolveRequestInput
-    } = options;
+  const { resolveHeaders, resolveQueryParams, resolveRequestInput } = options;
 
-    return ({ dispatch, getState }) => next => action => {
-      const {
-        type,
-        uri,
-        method: inputMethod,
-        format = 'json',
-        ignore = () => false,
-        payload = {}
-      } = action;
+  return ({ dispatch, getState }) => (next) => (action) => {
+    const { type, uri, method: inputMethod, format = 'json', ignore = () => false, payload = {} } = action;
 
-      // bypass default actions
-      if (!inputMethod && !uri) {
-        return next(action);
-      }
-
-      const method = inputMethod.toUpperCase();
-      const state = getState();
-
-      if (ignore(state)) {
-        return;
-      }
-
-      // loading start
-      dispatch({ type, payload });
-
-      let input = resolveRequestInput(action, state);
-      const queryParams = resolveQueryParams(action, state);
-
-      if (method === 'GET' || method === 'DELETE') {
-        input += getQueryParams(queryParams);
-      }
-
-      const body = getBody(method, queryParams, format);
-      const headers = resolveHeaders(action, state);
-
-      const init = {
-        method,
-        headers,
-        body
-      }
-
-      return fetch(input, init)
-        .then(preprocessResponse())
-        .then(processResponse(dispatch, { payload, type }))
-        .catch(processError(dispatch, { payload, type }));
+    // bypass default actions
+    if (!inputMethod && !uri) {
+      return next(action);
     }
-  }
+
+    const method = inputMethod.toUpperCase();
+    const state = getState();
+
+    if (ignore(state)) {
+      return;
+    }
+
+    // loading start
+    dispatch({ type, payload });
+
+    let input = resolveRequestInput(action, state);
+    const queryParams = resolveQueryParams(action, state);
+
+    if (method === 'GET' || method === 'DELETE') {
+      input += getQueryParams(queryParams);
+    }
+
+    const body = getBody(method, queryParams, format);
+    const headers = resolveHeaders(action, state);
+
+    const init = {
+      method,
+      headers,
+      body,
+    };
+
+    return fetch(input, init)
+      .then(preprocessResponse())
+      .then(processResponse(dispatch, { payload, type }))
+      .catch(processError(dispatch, { payload, type }));
+  };
+};
 
 export default callAPIMiddleware;

@@ -1,15 +1,14 @@
 function registerReducer(target, key, Reducer) {
-
-  if(!Object.getOwnPropertyDescriptor(target, 'registry') && target.__proto__.registry) {
+  if (!Object.getOwnPropertyDescriptor(target, 'registry') && target.__proto__.registry) {
     target.registry = [...target.__proto__.registry];
   } else {
     target.registry = target.registry || [];
   }
 
   Object.defineProperty(target, key + '_key', {
-    get: function() {
+    get: function () {
       return this.name + '.' + key;
-    }
+    },
   });
 
   target.registry.push({ key, Reducer });
@@ -18,47 +17,45 @@ function registerReducer(target, key, Reducer) {
 const emptyReducer = () => () => null;
 
 function reduxAction(method) {
-
-  return function(Reducer) {
+  return function (Reducer) {
     return function (target, key, descriptor) {
-
       // console.log(target, key, descriptor);
 
       const originalMethod = descriptor.value;
 
       registerReducer(target, key, Reducer || emptyReducer);
 
-      descriptor.value = function(...args) {
-        const { data, payload, format,  uri = ''} = originalMethod.call(this, ...args);
+      descriptor.value = function (...args) {
+        const { data, payload, format, uri = '' } = originalMethod.call(this, ...args);
         return {
           type: this.name + '.' + key,
           uri: this.uri + (uri ? '/' + uri : ''),
           method,
           format,
           data,
-          payload
+          payload,
         };
       };
 
       return descriptor;
-    }
-  }
+    };
+  };
 }
 
 export function action(Reducer) {
-  return function(target, key, descriptor) {
+  return function (target, key, descriptor) {
     const originalMethod = descriptor.value;
 
     registerReducer(target, key, Reducer);
-    
-    descriptor.value = function(...args) {
+
+    descriptor.value = function (...args) {
       const { payload } = originalMethod.call(this, ...args);
       return {
         type: [this.name, key].join('.'),
-        payload
+        payload,
       };
     };
-  }
+  };
 }
 
 export default reduxAction;
