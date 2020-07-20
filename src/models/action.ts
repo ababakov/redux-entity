@@ -5,5 +5,6 @@ export default interface RequestAction {
   format: String;
   data: any;
   payload: any;
+  response: any;
   status: String;
 }

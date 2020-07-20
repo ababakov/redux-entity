@@ -1,14 +1,15 @@
 import BaseRequestActionReducer from './base';
+import RequestAction from '../models/action';
 
 export default class CreateRequestActionReducer extends BaseRequestActionReducer {
-  updateDB(db, entry) {
+  updateDB(db:any, entry:any) {
     db = db || {};
     db[entry.id] = { ...entry, ...this.default };
     entry.parentId && (entry.parent = db[entry.parentId]);
     return db;
   }
 
-  success(state, action) {
+  success(state:any, action:RequestAction):any {
     const entry = this.modify(action.response);
     const flush = this.options.flush;
     const isNewItem = state.list && state.list.findIndex((i) => i && i.id == entry.id) == -1;
@@ -18,7 +19,7 @@ export default class CreateRequestActionReducer extends BaseRequestActionReducer
       count: state.count + (isNewItem ? 1 : 0),
       list: state.list
         ? !isNewItem
-          ? state.list.map((i) => (i.id == entry.id ? entry : i))
+          ? state.list.map((i:any) => (i.id == entry.id ? entry : i))
           : // that's isn't right for paginated list -- need to fully reload list
           // (for paginated if create - cause of sort, but for update it's ok to replace)
           // possible safer is to make it null- that will trigger reload

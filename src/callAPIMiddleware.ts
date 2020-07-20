@@ -1,15 +1,15 @@
-import qs from 'query-string';
+import * as qs from 'query-string';
 import { jsonToFormData } from './utils';
 
 const APPLICATION_JSON = 'application/json';
 
-const dataConverters = {
+const dataConverters:any = {
   json: JSON.stringify,
   multipart: jsonToFormData,
 };
 
-function getQueryParams(qdata) {
-  const res = {};
+function getQueryParams(qdata:any) {
+  const res:any = {};
   for (const key in qdata) {
     if (qdata[key] !== null && typeof qdata[key] !== 'undefined' && qdata[key] !== '') {
       res[key] = qdata[key];
@@ -19,7 +19,7 @@ function getQueryParams(qdata) {
   return params ? '?' + params : '';
 }
 
-function getBody(method, qdata, format) {
+function getBody(method:string, qdata:any, format:string) {
   try {
     return method !== 'GET' && method !== 'DELETE' ? dataConverters[format](qdata) : null;
   } catch (e) {
@@ -28,7 +28,7 @@ function getBody(method, qdata, format) {
   }
 }
 
-function prepareResponse(response) {
+function prepareResponse(response:any) {
   const contentType = response.headers.get('content-type');
   if (contentType && contentType.indexOf(APPLICATION_JSON) !== -1) {
     return response.json();
@@ -38,13 +38,13 @@ function prepareResponse(response) {
 }
 
 // TODO: Move to configuration?
-const preprocessResponse = () => (response) => {
+const preprocessResponse = () => (response:any) => {
   switch (response.status) {
     case 401:
     case 404:
       return Promise.reject();
     case 400:
-      return response.json().then((body) => Promise.reject(body));
+      return response.json().then((body:any) => Promise.reject(body));
     case 403:
     case 409:
       return response.json();
@@ -59,7 +59,7 @@ const preprocessResponse = () => (response) => {
   return prepareResponse(response);
 };
 
-const processResponse = (dispatch, mixin) => (response) => {
+const processResponse = (dispatch:(_:any) => any, mixin:any) => (response:any) => {
   if (response.error) {
     return dispatch({
       error: response.error,

@@ -1,5 +1,12 @@
+import RequestActionHandlerOptions from "../models/options";
+import BaseNormalizedState from "../models/state";
+import RequestAction from "../models/action";
+
 export default class CompoundHandler {
-  constructor(options) {
+  private reducers: any[];
+  private initialState?: BaseNormalizedState;
+
+  constructor(options:RequestActionHandlerOptions) {
     const { initialState, defaultOptions, reducers } = options;
 
     this.reducers = reducers
@@ -13,7 +20,7 @@ export default class CompoundHandler {
     this.initialState = initialState;
   }
 
-  handle(state, action) {
+  handle(state:BaseNormalizedState, action:RequestAction):BaseNormalizedState {
     let result = state || this.initialState;
     for (let i = 0; i < this.reducers.length; i++) {
       const r = this.reducers[i];

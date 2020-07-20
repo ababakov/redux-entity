@@ -1,14 +1,17 @@
 import ListRequestActionReducer from './list-request';
+import RequestActionHandlerOptions from '../models/options';
+import RequestAction from '../models/action';
+import BaseNormalizedState from '../models/state';
 
-export default class PaginatedListRequestActionReducer extends ListRequestActionReducer {
-  constructor(options) {
+export default class PaginatedListRequestActionReducer<TState extends BaseNormalizedState> extends ListRequestActionReducer {
+  constructor(options:RequestActionHandlerOptions) {
     super({
       flat: false,
       ...options,
     });
   }
 
-  listFromResponse(state, action) {
+  listFromResponse(state:any, action:RequestAction) {
     const { page, page_size } = action.payload;
     const { count } = action.response;
     const offset = (page - 1) * page_size;
@@ -19,10 +22,10 @@ export default class PaginatedListRequestActionReducer extends ListRequestAction
       stateList[i + offset] = list[i];
     }
 
-    return this.modify(stateList).map((i) => ({ ...i, ...this.options.default }));
+    return this.modify(stateList).map((i:any) => ({ ...i, ...this.options.default }));
   }
 
-  success(state, action) {
+  success(state:any, action:RequestAction) {
     const list = this.listFromResponse(state, action);
     const { page, page_size } = action.payload;
     const { count } = action.response;

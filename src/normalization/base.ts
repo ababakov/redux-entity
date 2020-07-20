@@ -1,5 +1,7 @@
+import RequestAction from '../models/action';
 import RequestActionHandlerOptions from '../models/options';
 import RequestActionHandler from '../models/handler';
+import BaseNormalizedState from '../models/state';
 
 export default class BaseHandler implements RequestActionHandler {
   options: RequestActionHandlerOptions;
@@ -12,14 +14,14 @@ export default class BaseHandler implements RequestActionHandler {
     };
   }
 
-  check(action) {
+  check(action:RequestAction) {
     const { type } = this.options;
     return (
       (typeof type === 'string' && action.type === type) || (Array.isArray(type) && type.indexOf(action.type) > -1)
     );
   }
 
-  handle(state, action) {
+  handle(state:BaseNormalizedState, action:RequestAction) {
     if (this.check(action)) {
       switch (action.status) {
         case 'success':
@@ -33,10 +35,10 @@ export default class BaseHandler implements RequestActionHandler {
     return { ...state, ...this.options.state };
   }
 
-  modify(i) {
+  modify(item:any):any|any[] {
     const { modifier } = this.options;
-    if (!modifier) return i;
-    return Array.isArray(i) ? i.map(modifier) : modifier(i);
+    if (!modifier) return item;
+    return Array.isArray(item) ? item.map(modifier) : modifier(item);
   }
 
   getMixin(state, action) {
