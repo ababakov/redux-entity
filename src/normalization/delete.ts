@@ -1,4 +1,4 @@
-import BaseRequestActionReducer from './base';
+import {BaseRequestActionReducer} from './base';
 
 export class DeleteRequestActionReducer extends BaseRequestActionReducer {
   updateDB(db, id) {

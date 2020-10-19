@@ -1,15 +1,15 @@
-import BaseNormalizedState from "./state";
+import { BaseNormalizedState, BaseModel } from "./state";
 
-export default interface RequestActionHandlerOptions {
-  initialState?:BaseNormalizedState;
-  defaultOptions?:RequestActionHandlerOptions;
+export interface RequestActionHandlerOptions<TModel extends BaseModel> {
+  initialState?: BaseNormalizedState<TModel>;
+  defaultOptions?: RequestActionHandlerOptions<TModel>;
   loading?: boolean;
   mixin?: any;
   type?: string;
   key: string;
   stateKey: string;
   default?: any;
-  state?: BaseNormalizedState;
+  state?: BaseNormalizedState<TModel>;
   modifier?: (_:any) => any;
   reducers?: any[];
   // to list options?

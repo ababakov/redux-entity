@@ -36,11 +36,11 @@
   "homepage": "https://github.com/ababakov/redux-entity#readme",
   "devDependencies": {
     "@types/jest": "^26.0.4",
+    "eslint": "^7.11.0",
+    "husky": "^4.3.0",
     "jest": "^26.1.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.2",
-    "tslint": "^6.1.2",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.6"
   },
   "dependencies": {

@@ -1,10 +1,10 @@
-import RequestAction from '../models/action';
-import RequestActionHandlerOptions from '../models/options';
-import RequestActionHandler from '../models/handler';
-import BaseNormalizedState from '../models/state';
+import { RequestAction } from '../models/action';
+import { RequestActionHandlerOptions } from '../models/options';
+import { RequestActionHandler } from '../models/handler';
+import { BaseModel, BaseNormalizedState } from '../models/state';
 
-export default class BaseHandler implements RequestActionHandler {
-  options: RequestActionHandlerOptions;
+export class BaseHandler<TModel extends BaseModel> implements RequestActionHandler {
+  options: RequestActionHandlerOptions<TModel>;
 
   constructor(options: any) {
     this.options = {
@@ -21,7 +21,7 @@ export default class BaseHandler implements RequestActionHandler {
     );
   }
 
-  handle(state:BaseNormalizedState, action:RequestAction) {
+  handle(state:BaseNormalizedState<TModel>, action:RequestAction) {
     if (this.check(action)) {
       switch (action.status) {
         case 'success':
@@ -41,7 +41,7 @@ export default class BaseHandler implements RequestActionHandler {
     return Array.isArray(item) ? item.map(modifier) : modifier(item);
   }
 
-  getMixin(state, action) {
+  getMixin(state: BaseNormalizedState<TModel>, action) {
     const { mixin } = this.options;
     return typeof mixin === 'function' ? mixin(state, action) : mixin;
   }

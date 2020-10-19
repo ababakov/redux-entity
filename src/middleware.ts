@@ -38,7 +38,7 @@ function prepareResponse(response:any) {
 }
 
 // TODO: Move to configuration?
-const preprocessResponse = () => (response:any) => {
+const preprocessResponse = () => (response:Response) => {
   switch (response.status) {
     case 401:
     case 404:
@@ -120,19 +120,49 @@ function defaultResolveHeaders({ format }, state): any {
   };
 }
 
-const defaultOptions = {
+
+
+
+interface Action {
+  type: string,
+  payload: any
+}
+
+interface FetchAction extends Action {
+  uri?: string,
+  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH',
+  format?: 'json' | 'formdata',
+}
+
+interface FetchMiddlewareOptions {
+  resolveHeaders?:
+  resolveQueryParams?:
+  resolveRequestInput?:
+}
+
+const defaultOptions: FetchMiddlewareOptions = {
   resolveHeaders: defaultResolveHeaders,
   resolveRequestInput: defaultResolveRequestInput,
   resolveQueryParams: defaultResolveQueryParams,
 };
 
-const callAPIMiddleware: (options: any) => any = (options) => {
+// type DispatchFunction = (a: Action) => void
+type FetchMiddleware = (options: any) => any
+
+const middleware: FetchMiddleware = (options) => {
   options = { ...defaultOptions, ...options };
 
   const { resolveHeaders, resolveQueryParams, resolveRequestInput } = options;
 
-  return ({ dispatch, getState }) => (next) => (action) => {
-    const { type, uri, method: inputMethod, format = 'json', ignore = () => false, payload = {} } = action;
+  return ({ dispatch, getState }) => (next) => (action: FetchAction) => {
+    const { 
+      type, 
+      uri, 
+      method: inputMethod, 
+      format = 'json', 
+      // ignore = () => false, 
+      payload = {} 
+    } = action;
 
     // bypass default actions
     if (!inputMethod && !uri) {
@@ -172,4 +202,4 @@ const callAPIMiddleware: (options: any) => any = (options) => {
   };
 };
 
-export default callAPIMiddleware;
+export default middleware;

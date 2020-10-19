@@ -1,16 +1,18 @@
-import RequestActionHandlerOptions from './options';
-import RequestAction from './action';
-import BaseNormalizedState from './state';
+import { RequestActionHandlerOptions } from './options'
+import { RequestAction } from './action'
+import { BaseModel, BaseNormalizedState } from './state'
 
-export default interface RequestActionHandler {
-  options: RequestActionHandlerOptions;
-  check(action: RequestAction): Boolean;
+export interface RequestActionHandler<TModel extends BaseModel> {
+  options: RequestActionHandlerOptions<TModel>
+  check(action: RequestAction): Boolean
 
-  handle(state:BaseNormalizedState, action:RequestAction): BaseNormalizedState;
-  modify(item:any):any|any[];
-  getMixin();
+  handle(state:BaseNormalizedState<TModel>, action:RequestAction): BaseNormalizedState<TModel>
 
-  success();
-  failure();
-  request();
+  modify(item:any):any|any[]
+  
+  getMixin(): any
+
+  success(): any
+  failure(): any
+  request(): any
 }

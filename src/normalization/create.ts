@@ -1,7 +1,7 @@
 import BaseRequestActionReducer from './base';
 import RequestAction from '../models/action';
 
-export default class CreateRequestActionReducer extends BaseRequestActionReducer {
+export class CreateRequestActionReducer extends BaseRequestActionReducer {
   updateDB(db:any, entry:any) {
     db = db || {};
     db[entry.id] = { ...entry, ...this.default };

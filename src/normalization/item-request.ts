@@ -1,6 +1,6 @@
 import BaseRequestActionReducer from './base';
 
-export default class ItemRequestActionReducer extends BaseRequestActionReducer {
+export class ItemRequestActionReducer extends BaseRequestActionReducer {
   constructor(options) {
     super({
       key: '',

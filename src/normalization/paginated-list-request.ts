@@ -1,9 +1,9 @@
-import ListRequestActionReducer from './list-request';
-import RequestActionHandlerOptions from '../models/options';
-import RequestAction from '../models/action';
-import BaseNormalizedState from '../models/state';
+import { ListRequestActionReducer } from './list-request';
+import { RequestActionHandlerOptions } from '../models/options';
+import { RequestAction } from '../models/action';
+import { BaseNormalizedState } from '../models/state';
 
-export default class PaginatedListRequestActionReducer<TState extends BaseNormalizedState> extends ListRequestActionReducer {
+export class PaginatedListRequestActionReducer<TState extends BaseNormalizedState> extends ListRequestActionReducer {
   constructor(options:RequestActionHandlerOptions) {
     super({
       flat: false,

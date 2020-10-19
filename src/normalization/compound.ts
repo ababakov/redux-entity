@@ -1,12 +1,12 @@
-import RequestActionHandlerOptions from "../models/options";
-import BaseNormalizedState from "../models/state";
-import RequestAction from "../models/action";
+import { RequestActionHandlerOptions } from "../models/options";
+import { BaseNormalizedState, BaseModel } from "../models/state";
+import { RequestAction } from "../models/action";
 
-export default class CompoundHandler {
+export class CompoundHandler<TModel extends BaseModel> {
   private reducers: any[];
-  private initialState?: BaseNormalizedState;
+  private initialState?: BaseNormalizedState<TModel>;
 
-  constructor(options:RequestActionHandlerOptions) {
+  constructor(options:RequestActionHandlerOptions<TModel>) {
     const { initialState, defaultOptions, reducers } = options;
 
     this.reducers = reducers
@@ -20,7 +20,7 @@ export default class CompoundHandler {
     this.initialState = initialState;
   }
 
-  handle(state:BaseNormalizedState, action:RequestAction):BaseNormalizedState {
+  handle(state:BaseNormalizedState<TModel>, action:RequestAction):BaseNormalizedState<TModel> {
     let result = state || this.initialState;
     for (let i = 0; i < this.reducers.length; i++) {
       const r = this.reducers[i];

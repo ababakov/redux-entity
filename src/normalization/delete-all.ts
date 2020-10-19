@@ -2,7 +2,7 @@ import BaseRequestActionReducer from './base';
 import BaseNormalizedState from '../models/state';
 import RequestAction from '../models/action';
 
-export default class DeleteAllRequestActionReducer extends BaseRequestActionReducer {
+export class DeleteAllRequestActionReducer extends BaseRequestActionReducer {
   success(state:BaseNormalizedState, action:RequestAction):BaseNormalizedState {
     if (action.response && action.response.result) {
       let { db, list } = state;

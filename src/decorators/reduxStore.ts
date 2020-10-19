@@ -1,10 +1,17 @@
-import { combineReducers } from 'redux';
-import CompoundReducer from '../common/index';
+import { CrudEntity } from '../crud-entity';
+import { BaseModel } from '../models/state';
+import { CompoundHandler } from '../normalization/compound';
 import { isClass } from '../utils';
 
-export default function reduxStore(EntityClass) {
-  return class extends EntityClass {
-    types = {};
+
+type BaseEntityClass = typeof CrudEntity
+interface Dictionary<T> {
+  [key: string]: T;
+}
+
+export function reduxStore<TModel>(EntityClass:BaseEntityClass): BaseEntityClass {
+  class ResultCrudClass<TModel extends BaseModel> extends EntityClass<TModel> {
+    types: { [key: string]: string } = {}
 
     reducer() {
       const { permit } = this.options;
@@ -48,7 +55,7 @@ export default function reduxStore(EntityClass) {
         }
       });
 
-      const r = new CompoundReducer({
+      const r = new CompoundHandler({
         initialState: this.options.state,
         reducers: [...list, ...sideEffects],
       });
@@ -58,4 +65,7 @@ export default function reduxStore(EntityClass) {
       return this.configure ? this.configure(result) : result;
     }
   };
+
+  //@ts-ignore
+  return ResultCrudClass
 }

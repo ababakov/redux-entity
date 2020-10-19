@@ -1,6 +1,6 @@
 import BaseRequestActionReducer from './base';
 
-export default class ListRequestActionReducer extends BaseRequestActionReducer {
+export class ListRequestActionReducer extends BaseRequestActionReducer {
   constructor(options) {
     super({
       loading: true,
