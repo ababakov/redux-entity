@@ -3,10 +3,6 @@ import { FetchActionHandlerOptions } from '../models/options';
 import { FetchActionHandler } from '../models/handler';
 import { BaseModel, BaseState, DB, ID } from '../models/state';
 
-
-
-
-
 export class BaseHandler<TModel extends BaseModel, TPayload = {}> implements FetchActionHandler<TModel, TPayload> {
   options: FetchActionHandlerOptions<TModel>;
 
@@ -19,17 +15,17 @@ export class BaseHandler<TModel extends BaseModel, TPayload = {}> implements Fet
   }
 
   protected updateDB(db: DB<TModel>, entry: any): DB<TModel> {
-    return db
+    return db;
   }
 
-  check(action:FetchAction<TPayload>) {
+  check(action: FetchAction<TPayload>) {
     const { type } = this.options;
     return (
       (typeof type === 'string' && action.type === type) || (Array.isArray(type) && type.indexOf(action.type) > -1)
     );
   }
 
-  handle(state:BaseState<TModel>, action:FetchAction<TPayload>) {
+  handle(state: BaseState<TModel>, action: FetchAction<TPayload>) {
     if (this.check(action)) {
       switch (action.status) {
         case 'success':
@@ -43,7 +39,7 @@ export class BaseHandler<TModel extends BaseModel, TPayload = {}> implements Fet
     return { ...state, ...this.options.state };
   }
 
-  modify(item:any):any|any[] {
+  modify(item: any): any | any[] {
     const { modifier } = this.options;
     if (!modifier) return item;
     return Array.isArray(item) ? item.map(modifier) : modifier(item);
@@ -73,7 +69,7 @@ export class BaseHandler<TModel extends BaseModel, TPayload = {}> implements Fet
     };
   }
 
-  do(state: BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel> {
+  do(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...state,
       prevPayload: action.payload,

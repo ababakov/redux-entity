@@ -14,7 +14,7 @@ export class ListHandler<TModel extends BaseModel, TPayload> extends BaseHandler
     });
   }
 
-  updateDB(db: DB<TModel>, list:any): DB<TModel> {
+  updateDB(db: DB<TModel>, list: any): DB<TModel> {
     db = db || {};
     if (!list) return {};
     list.forEach((i: any) => {
@@ -29,7 +29,7 @@ export class ListHandler<TModel extends BaseModel, TPayload> extends BaseHandler
     );
   }
 
-  success(state:BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel> {
+  success(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     const list = this.listFromResponse(state, action);
     const { count } = action.response;
     return {
@@ -40,7 +40,7 @@ export class ListHandler<TModel extends BaseModel, TPayload> extends BaseHandler
     };
   }
 
-  failure(state:BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel> {
+  failure(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...super.failure(state, action),
       [this.options.stateKey]: null,

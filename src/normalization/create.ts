@@ -3,14 +3,14 @@ import { FetchAction } from '../models/action';
 import { BaseModel, BaseState, DB } from '../models/state';
 
 export class CreateFetchActionReducer<TModel extends BaseModel, TPayload> extends BaseHandler<TModel, TPayload> {
-  protected updateDB(db:DB<TModel>, entry:any): DB<TModel> {
+  protected updateDB(db: DB<TModel>, entry: any): DB<TModel> {
     db = db || {};
     db[entry.id] = { ...entry, ...this.options.default };
     entry.parentId && (entry.parent = db[entry.parentId]);
     return db;
   }
 
-  success(state:BaseState<TModel>, action:FetchAction<TPayload>):BaseState<TModel> {
+  success(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     const entry = this.modify(action.response);
     const flush = this.options.flush;
     const isNewItem = state.list && state.list.findIndex((i) => i && i == entry.id) == -1;

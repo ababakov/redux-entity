@@ -1,15 +1,14 @@
-
 // Basic redux action
 export interface Action<TPayload> {
-  type: String
-  payload: TPayload
+  type: string;
+  payload: TPayload;
 }
 
 export interface FetchAction<TPayload> extends Action<TPayload> {
-  uri: String;
-  method: String;
-  format: String;
+  uri: string;
+  method: string;
+  format: string;
   data?: any;
   response?: any;
-  status?: String;
+  status?: string;
 }

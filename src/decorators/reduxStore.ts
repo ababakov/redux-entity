@@ -3,15 +3,14 @@ import { BaseModel } from '../models/state';
 import { CompoundHandler } from '../normalization/compound';
 import { isClass } from '../utils';
 
-
-type BaseEntityClass = typeof CrudEntity
+type BaseEntityClass = typeof CrudEntity;
 interface Dictionary<T> {
   [key: string]: T;
 }
 
-export function reduxStore<TModel>(EntityClass:BaseEntityClass): BaseEntityClass {
+export function reduxStore<TModel>(EntityClass: BaseEntityClass): BaseEntityClass {
   class ResultCrudClass<TModel extends BaseModel> extends EntityClass<TModel> {
-    types: { [key: string]: string } = {}
+    types: { [key: string]: string } = {};
 
     reducer() {
       const { permit } = this.options;
@@ -64,8 +63,8 @@ export function reduxStore<TModel>(EntityClass:BaseEntityClass): BaseEntityClass
 
       return this.configure ? this.configure(result) : result;
     }
-  };
+  }
 
   //@ts-ignore
-  return ResultCrudClass
+  return ResultCrudClass;
 }

@@ -1,4 +1,4 @@
-import { BaseState, BaseModel } from "./state";
+import { BaseState, BaseModel } from './state';
 
 export interface FetchActionHandlerOptions<TModel extends BaseModel> {
   initialState?: BaseState<TModel>;
@@ -11,7 +11,7 @@ export interface FetchActionHandlerOptions<TModel extends BaseModel> {
   stateKey: string;
   default?: any;
   state?: BaseState<TModel>;
-  modifier?: (_:any) => any;
+  modifier?: (_: any) => any;
   reducers?: any[];
   // to list options?
   flat?: boolean;

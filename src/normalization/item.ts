@@ -3,13 +3,14 @@ import { BaseHandler } from './base';
 import { FetchActionHandlerOptions } from '../models/options';
 import { FetchAction } from '../models/action';
 
-
 export interface BaseItemPayload {
-  id: ID
+  id: ID;
 }
 
-
-export class ItemHandler<TModel extends BaseModel, TPayload extends BaseItemPayload> extends BaseHandler<TModel, TPayload> {
+export class ItemHandler<TModel extends BaseModel, TPayload extends BaseItemPayload> extends BaseHandler<
+  TModel,
+  TPayload
+> {
   constructor(options: FetchActionHandlerOptions<TModel>) {
     super({
       // key: '',
@@ -17,7 +18,7 @@ export class ItemHandler<TModel extends BaseModel, TPayload extends BaseItemPayl
     });
   }
 
-  protected updateDB(db:DB<TModel>, entry:TModel): DB<TModel> {
+  protected updateDB(db: DB<TModel>, entry: TModel): DB<TModel> {
     if (!db) db = {};
     if (!entry) return db;
     db[entry.id] = { ...entry, ...this.options.default };

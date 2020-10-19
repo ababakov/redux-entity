@@ -9,12 +9,12 @@
   "scripts": {
     "test": "jest --config jestconfig.json",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "eslint src/**/*.ts --fix",
     "build": "tsc",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
+    "prepare": "yarn run build",
+    "prepublishOnly": "yarn test && yarn run lint",
+    "preversion": "yarn run lint",
+    "version": "yarn run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
   "repository": {
@@ -28,7 +28,13 @@
     "crud",
     "rest"
   ],
-  "author": "",
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "author": "ababakov",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ababakov/redux-entity/issues"
@@ -36,10 +42,15 @@
   "homepage": "https://github.com/ababakov/redux-entity#readme",
   "devDependencies": {
     "@types/jest": "^26.0.4",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/eslint-plugin-tslint": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
     "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.3.0",
     "jest": "^26.1.0",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.2",
     "ts-jest": "^26.1.2",
     "typescript": "^3.9.6"
   },

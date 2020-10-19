@@ -1,4 +1,4 @@
-import { CrudEntity } from "../crud-entity";
+import { CrudEntity } from '../crud-entity';
 
 function registerReducer(target, key, Reducer) {
   if (!Object.getOwnPropertyDescriptor(target, 'registry') && target.__proto__.registry) {

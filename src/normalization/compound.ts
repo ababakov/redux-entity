@@ -1,12 +1,12 @@
-import { FetchActionHandlerOptions } from "../models/options";
-import { BaseState, BaseModel } from "../models/state";
-import { FetchAction } from "../models/action";
+import { FetchActionHandlerOptions } from '../models/options';
+import { BaseState, BaseModel } from '../models/state';
+import { FetchAction } from '../models/action';
 
 export class CompoundHandler<TModel extends BaseModel, TPayload> {
   private reducers: any[];
   private initialState?: BaseState<TModel>;
 
-  constructor(options:FetchActionHandlerOptions<TModel>) {
+  constructor(options: FetchActionHandlerOptions<TModel>) {
     const { initialState, defaultOptions, reducers } = options;
 
     this.reducers = reducers
@@ -20,7 +20,7 @@ export class CompoundHandler<TModel extends BaseModel, TPayload> {
     this.initialState = initialState;
   }
 
-  handle(state:BaseState<TModel>, action:FetchAction<TPayload>):BaseState<TModel> {
+  handle(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     let result = state || this.initialState;
     for (let i = 0; i < this.reducers.length; i++) {
       const r = this.reducers[i];
