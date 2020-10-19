@@ -1,8 +1,8 @@
-import { ItemRequestActionReducer } from './normalization/item-request';
-import { PaginatedListRequestActionReducer } from './normalization/paginated-list-request';
-import { ListRequestActionReducer } from './normalization/list-request';
-import { CreateRequestActionReducer } from './normalization/create';
-import { DeleteRequestActionReducer } from './normalization/delete';
+import { ItemHandler } from './normalization/item';
+import { PaginatedListHandler } from './normalization/paginated-list';
+import { ListHandler } from './normalization/list';
+import { CreateFetchActionReducer } from './normalization/create';
+import { DeleteHandler } from './normalization/delete';
 
 import { reduxStore } from './decorators/reduxStore';
 import { get, post, del, patch } from './decorators/reduxAction';
@@ -35,7 +35,7 @@ export class CrudEntity<TModel> {
     };
   }
 
-  @post(CreateRequestActionReducer)
+  @post(CreateFetchActionReducer)
   create(model: TModel) {
     return {
       data: { ...model },
@@ -43,7 +43,7 @@ export class CrudEntity<TModel> {
     };
   }
 
-  @get(ItemRequestActionReducer)
+  @get(ItemHandler)
   get(id: ID) {
     return {
       uri: id,
@@ -51,7 +51,7 @@ export class CrudEntity<TModel> {
     };
   }
 
-  @get(({ paginated }: any) => (paginated ? PaginatedListRequestActionReducer : ListRequestActionReducer))
+  @get(({ paginated }: any) => (paginated ? PaginatedListHandler : ListHandler))
   load(params: any) {
     return {
       payload: { page_size: 10, page: 1, ...params },
@@ -59,7 +59,7 @@ export class CrudEntity<TModel> {
     };
   }
 
-  @patch(CreateRequestActionReducer)
+  @patch(CreateFetchActionReducer)
   update({ id, ...model }: any, params: any, validate: boolean = false) {
     return {
       method: validate ? 'put' : 'patch',
@@ -69,7 +69,7 @@ export class CrudEntity<TModel> {
     };
   }
 
-  @del(DeleteRequestActionReducer)
+  @del(DeleteHandler)
   remove(id: ID, params: any) {
     return {
       method: 'delete',

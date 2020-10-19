@@ -1,18 +1,18 @@
-import BaseRequestActionReducer from './base';
-import BaseNormalizedState from '../models/state';
-import RequestAction from '../models/action';
+import { BaseHandler } from './base';
+import { BaseModel, BaseState, ID } from '../models/state';
+import { FetchAction } from '../models/action';
 
-export class DeleteAllRequestActionReducer extends BaseRequestActionReducer {
-  success(state:BaseNormalizedState, action:RequestAction):BaseNormalizedState {
+export class DeleteAllHandler<TModel extends BaseModel, TPayload>  extends BaseHandler<TModel, TPayload> {
+  success(state:BaseState<TModel>, action:FetchAction<TPayload>):BaseState<TModel> {
     if (action.response && action.response.result) {
       let { db, list } = state;
-      action.response.result.forEach((id) => {
+      action.response.result.forEach((id: ID) => {
         if (db[id]) {
           delete db[id];
         }
-        const index = list.findIndex((i) => i.id == id);
+        const index = list!.findIndex((i) => i == id);
         if (index >= 0) {
-          list.splice(index, 1);
+          list!.splice(index, 1);
         }
       });
       return {

@@ -1,12 +1,16 @@
-import { RequestAction } from '../models/action';
-import { RequestActionHandlerOptions } from '../models/options';
-import { RequestActionHandler } from '../models/handler';
-import { BaseModel, BaseNormalizedState } from '../models/state';
+import { FetchAction } from '../models/action';
+import { FetchActionHandlerOptions } from '../models/options';
+import { FetchActionHandler } from '../models/handler';
+import { BaseModel, BaseState, DB, ID } from '../models/state';
 
-export class BaseHandler<TModel extends BaseModel> implements RequestActionHandler {
-  options: RequestActionHandlerOptions<TModel>;
 
-  constructor(options: any) {
+
+
+
+export class BaseHandler<TModel extends BaseModel, TPayload = {}> implements FetchActionHandler<TModel, TPayload> {
+  options: FetchActionHandlerOptions<TModel>;
+
+  constructor(options: FetchActionHandlerOptions<TModel>) {
     this.options = {
       loading: false,
       mixin: {},
@@ -14,14 +18,18 @@ export class BaseHandler<TModel extends BaseModel> implements RequestActionHandl
     };
   }
 
-  check(action:RequestAction) {
+  protected updateDB(db: DB<TModel>, entry: any): DB<TModel> {
+    return db
+  }
+
+  check(action:FetchAction<TPayload>) {
     const { type } = this.options;
     return (
       (typeof type === 'string' && action.type === type) || (Array.isArray(type) && type.indexOf(action.type) > -1)
     );
   }
 
-  handle(state:BaseNormalizedState<TModel>, action:RequestAction) {
+  handle(state:BaseState<TModel>, action:FetchAction<TPayload>) {
     if (this.check(action)) {
       switch (action.status) {
         case 'success':
@@ -29,7 +37,7 @@ export class BaseHandler<TModel extends BaseModel> implements RequestActionHandl
         case 'error':
           return this.failure(state, action);
         default:
-          return this.request(state, action);
+          return this.do(state, action);
       }
     }
     return { ...state, ...this.options.state };
@@ -41,12 +49,12 @@ export class BaseHandler<TModel extends BaseModel> implements RequestActionHandl
     return Array.isArray(item) ? item.map(modifier) : modifier(item);
   }
 
-  getMixin(state: BaseNormalizedState<TModel>, action) {
+  getMixin(state: BaseState<TModel>, action: FetchAction<TPayload>): any {
     const { mixin } = this.options;
     return typeof mixin === 'function' ? mixin(state, action) : mixin;
   }
 
-  success(state, action) {
+  success(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...state,
       prevPayload: action.payload,
@@ -55,7 +63,7 @@ export class BaseHandler<TModel extends BaseModel> implements RequestActionHandl
     };
   }
 
-  failure(state, action) {
+  failure(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...state,
       prevPayload: action.payload,
@@ -65,7 +73,7 @@ export class BaseHandler<TModel extends BaseModel> implements RequestActionHandl
     };
   }
 
-  request(state, action) {
+  do(state: BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...state,
       prevPayload: action.payload,

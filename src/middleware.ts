@@ -135,9 +135,9 @@ interface FetchAction extends Action {
 }
 
 interface FetchMiddlewareOptions {
-  resolveHeaders?:
-  resolveQueryParams?:
-  resolveRequestInput?:
+  resolveHeaders?: any
+  resolveQueryParams?: any
+  resolveRequestInput?: any
 }
 
 const defaultOptions: FetchMiddlewareOptions = {

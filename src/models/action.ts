@@ -2,7 +2,7 @@
 // Basic redux action
 export interface Action<TPayload> {
   type: String
-  payload?: TPayload
+  payload: TPayload
 }
 
 export interface FetchAction<TPayload> extends Action<TPayload> {

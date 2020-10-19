@@ -37,7 +37,7 @@ export function reduxStore<TModel>(EntityClass:BaseEntityClass): BaseEntityClass
           return [...acc, { type: [type], Reducer }];
         }, [])
         .map(({ type, Reducer }) => {
-          // TODO: make it better - check for BaseRequestActionReducer prototype
+          // TODO: make it better - check for BaseFetchActionReducer prototype
           if (isClass(Reducer)) {
             const r = new Reducer({ type, ...this.options.defaultOptions });
             return r.handle.bind(r);

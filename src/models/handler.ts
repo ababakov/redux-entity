@@ -1,18 +1,18 @@
-import { RequestActionHandlerOptions } from './options'
-import { RequestAction } from './action'
-import { BaseModel, BaseNormalizedState } from './state'
+import { FetchActionHandlerOptions } from './options'
+import { FetchAction } from './action'
+import { BaseModel, BaseState } from './state'
 
-export interface RequestActionHandler<TModel extends BaseModel> {
-  options: RequestActionHandlerOptions<TModel>
-  check(action: RequestAction): Boolean
+export interface FetchActionHandler<TModel extends BaseModel, TPayload = {}> {
+  options: FetchActionHandlerOptions<TModel>
+  check(action: FetchAction<TPayload>): Boolean
 
-  handle(state:BaseNormalizedState<TModel>, action:RequestAction): BaseNormalizedState<TModel>
+  handle(state:BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel>
 
-  modify(item:any):any|any[]
+  modify(item:TModel):TModel|TModel[]
   
-  getMixin(): any
+  getMixin(state: BaseState<TModel>, action: FetchAction<TPayload>): any
 
-  success(): any
-  failure(): any
-  request(): any
+  success(state: BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel>
+  failure(state: BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel>
+  do(state: BaseState<TModel>, action:FetchAction<TPayload>): BaseState<TModel>
 }

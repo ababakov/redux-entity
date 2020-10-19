@@ -1,6 +1,6 @@
 import { CrudEntity } from "../crud-entity";
 
-function registerReducer(target: , key, Reducer) {
+function registerReducer(target, key, Reducer) {
   if (!Object.getOwnPropertyDescriptor(target, 'registry') && target.__proto__.registry) {
     target.registry = [...target.__proto__.registry];
   } else {
@@ -18,7 +18,7 @@ function registerReducer(target: , key, Reducer) {
 
 const emptyReducer = () => () => null;
 
-function reduxAction(method) {
+export function reduxAction(method) {
   return function (Reducer) {
     return function (target, key, descriptor) {
       // console.log(target, key, descriptor);
@@ -60,7 +60,6 @@ export function action(Reducer) {
   };
 }
 
-export reduxAction;
 export const get = reduxAction('get');
 export const post = reduxAction('post');
 export const del = reduxAction('delete');
