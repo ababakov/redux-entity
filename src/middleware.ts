@@ -1,34 +1,49 @@
 import * as qs from 'query-string';
+import { FetchAction, FormatType } from './models/action';
 import { jsonToFormData } from './utils';
 
 const APPLICATION_JSON = 'application/json';
 
-const dataConverters:any = {
+const HEADERS: { [K in FormatType]: any } = {
+  json: {
+    Accept: APPLICATION_JSON,
+    'Content-Type': APPLICATION_JSON,
+    Pragma: 'no-cache',
+  },
+  multipart: {
+    Pragma: 'no-cache',
+  },
+};
+
+type FormatFunction = (data: any) => string;
+
+const CONVERTERS: { [K in FormatType]: FormatFunction } = {
   json: JSON.stringify,
   multipart: jsonToFormData,
 };
 
-function getQueryParams(qdata:any) {
-  const res:any = {};
-  for (const key in qdata) {
-    if (qdata[key] !== null && typeof qdata[key] !== 'undefined' && qdata[key] !== '') {
-      res[key] = qdata[key];
+function packQueryParams(params: any) {
+  const result: any = {};
+  for (const key in params) {
+    // filter null and undefined and empty string
+    if (params[key] !== null && typeof params[key] !== 'undefined' && params[key] !== '') {
+      result[key] = params[key];
     }
   }
-  const params = qs.stringify(res);
-  return params ? '?' + params : '';
+  const packed = qs.stringify(result);
+  return packed ? '?' + packed : '';
 }
 
-function getBody(method:string, qdata:any, format:string) {
+function packBody(method: string, qdata: any, format: FormatType) {
   try {
-    return method !== 'GET' && method !== 'DELETE' ? dataConverters[format](qdata) : null;
+    return method !== 'GET' && method !== 'DELETE' ? CONVERTERS[format](qdata) : null;
   } catch (e) {
     console.log(qdata);
     throw e;
   }
 }
 
-function prepareResponse(response:any) {
+function prepareResponse(response: any) {
   const contentType = response.headers.get('content-type');
   if (contentType && contentType.indexOf(APPLICATION_JSON) !== -1) {
     return response.json();
@@ -38,13 +53,13 @@ function prepareResponse(response:any) {
 }
 
 // TODO: Move to configuration?
-const preprocessResponse = () => (response:Response) => {
+const preprocessResponse = () => (response: Response) => {
   switch (response.status) {
     case 401:
     case 404:
       return Promise.reject();
     case 400:
-      return response.json().then((body:any) => Promise.reject(body));
+      return response.json().then((body: any) => Promise.reject(body));
     case 403:
     case 409:
       return response.json();
@@ -59,7 +74,7 @@ const preprocessResponse = () => (response:Response) => {
   return prepareResponse(response);
 };
 
-const processResponse = (dispatch:(_:any) => any, mixin:any) => (response:any) => {
+const processResponse = (dispatch: (_: any) => any, mixin: any) => (response: any) => {
   if (response.error) {
     return dispatch({
       error: response.error,
@@ -84,84 +99,62 @@ const processError = (dispatch, mixin) => (result) => {
   });
 };
 
-function defaultResolveRequestInput({ uri }, state) {
-  const result = typeof uri === 'function' ? uri(state) : `${uri}`;
-
-  if (typeof result !== 'string') {
-    throw Error('Resolve requestUri error');
-  }
-
-  return result;
+function callOrReturn(item: any, args: any[]) {
+  return typeof item === 'function' ? item(...args) : item;
 }
 
-function defaultResolveQueryParams({ data }, state) {
-  return typeof data === 'function' ? data(state) : data;
-}
+type BuildRequestFunction = (state: any, action: FetchAction) => [string, RequestInit?];
 
-function defaultResolveHeaders({ format }, state): any {
-  function getAuthorization(token) {
-    return token ? { Authorization: `Token ${token}` } : {};
-  }
+const defaultBuildRequest: BuildRequestFunction = (state: any, action: FetchAction) => {
+  const {
+    type,
+    uri,
+    method: inputMethod,
+    // ignore = () => false,
+    format = 'json',
+    data,
+    payload = {},
+  } = action;
 
-  const headersCases = {
-    json: {
-      Accept: APPLICATION_JSON,
-      'Content-Type': APPLICATION_JSON,
-      Pragma: 'no-cache',
-    },
-    multipart: {
-      Pragma: 'no-cache',
-    },
+  const method = inputMethod!.toUpperCase();
+
+  const params = callOrReturn(data, [state]);
+  const input = callOrReturn(uri, [state]) + (method === 'GET' || method === 'DELETE' ? packQueryParams(params) : '');
+  const body = packBody(method, params, format);
+  const headers = HEADERS[format];
+
+  const init = {
+    method,
+    headers,
+    body,
   };
 
-  return {
-    ...headersCases[format],
-    ...getAuthorization(state.Session.token),
-  };
-}
-
-
-
-
-interface Action {
-  type: string,
-  payload: any
-}
-
-interface FetchAction extends Action {
-  uri?: string,
-  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH',
-  format?: 'json' | 'formdata',
-}
+  return [input, init];
+};
 
 interface FetchMiddlewareOptions {
-  resolveHeaders?: any
-  resolveQueryParams?: any
-  resolveRequestInput?: any
+  buildRequest: BuildRequestFunction;
 }
 
 const defaultOptions: FetchMiddlewareOptions = {
-  resolveHeaders: defaultResolveHeaders,
-  resolveRequestInput: defaultResolveRequestInput,
-  resolveQueryParams: defaultResolveQueryParams,
+  buildRequest: defaultBuildRequest,
 };
 
 // type DispatchFunction = (a: Action) => void
-type FetchMiddleware = (options: any) => any
+type FetchMiddleware = (options: any) => any;
 
-const middleware: FetchMiddleware = (options) => {
+const middleware: FetchMiddleware = (options: FetchMiddlewareOptions) => {
   options = { ...defaultOptions, ...options };
 
-  const { resolveHeaders, resolveQueryParams, resolveRequestInput } = options;
+  const { buildRequest } = options;
 
   return ({ dispatch, getState }) => (next) => (action: FetchAction) => {
-    const { 
-      type, 
-      uri, 
-      method: inputMethod, 
-      format = 'json', 
-      // ignore = () => false, 
-      payload = {} 
+    const {
+      type,
+      uri,
+      method: inputMethod,
+      // ignore = () => false,
+      payload = {},
     } = action;
 
     // bypass default actions
@@ -169,33 +162,17 @@ const middleware: FetchMiddleware = (options) => {
       return next(action);
     }
 
-    const method = inputMethod.toUpperCase();
-    const state = getState();
-
-    if (ignore(state)) {
-      return;
-    }
+    // if (ignore(state)) {
+    //   return;
+    // }
 
     // loading start
+
     dispatch({ type, payload });
 
-    let input = resolveRequestInput(action, state);
-    const queryParams = resolveQueryParams(action, state);
+    const requestArgs = buildRequest(getState(), action);
 
-    if (method === 'GET' || method === 'DELETE') {
-      input += getQueryParams(queryParams);
-    }
-
-    const body = getBody(method, queryParams, format);
-    const headers = resolveHeaders(action, state);
-
-    const init = {
-      method,
-      headers,
-      body,
-    };
-
-    return fetch(input, init)
+    return fetch(new Request(...requestArgs))
       .then(preprocessResponse())
       .then(processResponse(dispatch, { payload, type }))
       .catch(processError(dispatch, { payload, type }));
