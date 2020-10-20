@@ -1,8 +1,9 @@
 import { CrudEntity } from '../crud-entity';
 import { MethodType } from '../models/action';
+import { BaseModel } from '../models/state';
 import { BaseHandler } from '../normalization/base';
 
-export type HandlerType = typeof BaseHandler | { (...args: any): any };
+export type HandlerType = { new (...args: any): BaseHandler<BaseModel, any> } | { (...args: any): any };
 
 export type HandlersRegistryItem = { key: string; Reducer: HandlerType };
 export type HandlersRegistry = HandlersRegistryItem[];

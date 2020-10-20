@@ -1,25 +1,23 @@
 {
-  "name": "redux-entity",
-  "version": "1.0.0",
-  "description": "small framework to reduce action name generation work for CRUD operation in Restful",
-  "main": "index.js",
+  "name": "redux-yeti",
+  "version": "0.0.1",
+  "description": "small framework to reduce action name generation work for CRUD operations in Restful",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "lib/**/*"
+    "dist"
   ],
   "scripts": {
     "test": "jest --config jestconfig.json",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint src/**/*.ts --fix",
-    "build": "tsc",
+    "build": "tsc --build tsconfig.build.json",
+    "clear": "rm -rf dist/",
     "prepare": "yarn run build",
-    "prepublishOnly": "yarn test && yarn run lint",
-    "preversion": "yarn run lint",
-    "version": "yarn run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "lint": "eslint src/**/*.ts --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ababakov/redux-entity.git"
+    "url": "git+https://github.com/ababakov/redux-yeti.git"
   },
   "keywords": [
     "redux",
@@ -39,9 +37,9 @@
   "author": "ababakov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ababakov/redux-entity/issues"
+    "url": "https://github.com/ababakov/redux-yeti/issues"
   },
-  "homepage": "https://github.com/ababakov/redux-entity#readme",
+  "homepage": "https://github.com/ababakov/redux-yeti#readme",
   "devDependencies": {
     "@types/jest": "^26.0.4",
     "@types/react-redux": "^7.1.9",
