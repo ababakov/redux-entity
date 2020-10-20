@@ -4,24 +4,24 @@ import { ListHandler } from './normalization/list';
 import { CreateFetchActionReducer } from './normalization/create';
 import { DeleteHandler } from './normalization/delete';
 
-import { reduxStore } from './decorators/reduxStore';
-import { get, post, del, patch } from './decorators/reduxAction';
+import { reduxStore } from './decorators/store';
+import { get, post, del, patch, RegisteredClass, HandlersRegistry } from './decorators/action';
+import { BaseModel } from './models/state';
+import { FetchActionHandlerOptions } from './models/options';
 
-
-interface CrudEntityOptions {
-  state?: any
+export interface CrudEntityOptions<TModel extends BaseModel = BaseModel> {
+  state?: any;
+  permit?: any;
+  sideEffects?: any;
+  defaultOptions?: FetchActionHandlerOptions<TModel>;
 }
 
-type ID = String | number
+type ID = string | number;
 
+export class CrudEntity<TModel extends BaseModel = BaseModel> implements RegisteredClass {
+  registry?: HandlersRegistry;
 
-export class CrudEntity<TModel> {
-
-  constructor(
-    private name: String, 
-    private uri: String = '', 
-    private options: CrudEntityOptions = {}
-  ) {
+  constructor(public name: string, public uri: string = '', public options: CrudEntityOptions<TModel> = {}) {
     this.options = {
       ...options,
       state: {
@@ -60,7 +60,7 @@ export class CrudEntity<TModel> {
   }
 
   @patch(CreateFetchActionReducer)
-  update({ id, ...model }: any, params: any, validate: boolean = false) {
+  update({ id, ...model }: any, params: any, validate = false) {
     return {
       method: validate ? 'put' : 'patch',
       uri: id,
@@ -78,10 +78,10 @@ export class CrudEntity<TModel> {
       payload: { id, ...params },
     };
   }
-  
+
   // result reducer generator
   reducer() {
-    throw new Error("Not implemented")
+    throw new Error('Not implemented');
   }
 }
 

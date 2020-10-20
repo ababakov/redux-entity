@@ -1,3 +1,3 @@
-export * from './reduxAction';
-export { reduxAction } from './reduxAction';
-export { reduxStore } from './reduxStore';
+export * from './action';
+export { reduxAction } from './action';
+export { reduxStore } from './store';

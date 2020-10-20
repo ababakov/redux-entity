@@ -3,7 +3,7 @@ import { FetchActionHandlerOptions } from '../models/options';
 import { FetchActionHandler } from '../models/handler';
 import { BaseModel, BaseState, DB, ID } from '../models/state';
 
-export class BaseHandler<TModel extends BaseModel, TPayload = {}> implements FetchActionHandler<TModel, TPayload> {
+export class BaseHandler<TModel extends BaseModel, TPayload = any> implements FetchActionHandler<TModel, TPayload> {
   options: FetchActionHandlerOptions<TModel>;
 
   constructor(options: FetchActionHandlerOptions<TModel>) {

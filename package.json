@@ -29,8 +29,10 @@
     "rest"
   ],
   "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ],
     "*.{js,ts,tsx}": [
-      "eslint --fix",
       "prettier --write"
     ]
   },
@@ -42,6 +44,8 @@
   "homepage": "https://github.com/ababakov/redux-entity#readme",
   "devDependencies": {
     "@types/jest": "^26.0.4",
+    "@types/react-redux": "^7.1.9",
+    "@types/redux": "^3.6.0",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/eslint-plugin-tslint": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",

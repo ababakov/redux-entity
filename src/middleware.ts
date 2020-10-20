@@ -1,6 +1,7 @@
 import * as qs from 'query-string';
 import { FetchAction, FormatType } from './models/action';
 import { jsonToFormData } from './utils';
+import { Dispatch, Middleware } from 'redux';
 
 const APPLICATION_JSON = 'application/json';
 
@@ -91,9 +92,9 @@ const processResponse = (dispatch: (_: any) => any, mixin: any) => (response: an
   }
 };
 
-const processError = (dispatch, mixin) => (result) => {
+const processError = (dispatch: Dispatch, mixin: any) => (reason: any) => {
   return dispatch({
-    error: result.error,
+    error: reason.error,
     status: 'error',
     ...mixin,
   });
@@ -105,7 +106,7 @@ function callOrReturn(item: any, args: any[]) {
 
 type BuildRequestFunction = (state: any, action: FetchAction) => [string, RequestInit?];
 
-const defaultBuildRequest: BuildRequestFunction = (state: any, action: FetchAction) => {
+const buildRequest: BuildRequestFunction = (state: any, action: FetchAction) => {
   const {
     type,
     uri,
@@ -136,37 +137,22 @@ interface FetchMiddlewareOptions {
   buildRequest: BuildRequestFunction;
 }
 
-const defaultOptions: FetchMiddlewareOptions = {
-  buildRequest: defaultBuildRequest,
-};
+const defaultOptions: FetchMiddlewareOptions = { buildRequest };
 
-// type DispatchFunction = (a: Action) => void
-type FetchMiddleware = (options: any) => any;
+type FetchMiddlewareFunction = (options: FetchMiddlewareOptions) => Middleware;
 
-const middleware: FetchMiddleware = (options: FetchMiddlewareOptions) => {
+const middleware: FetchMiddlewareFunction = (options) => {
   options = { ...defaultOptions, ...options };
 
   const { buildRequest } = options;
 
   return ({ dispatch, getState }) => (next) => (action: FetchAction) => {
-    const {
-      type,
-      uri,
-      method: inputMethod,
-      // ignore = () => false,
-      payload = {},
-    } = action;
+    const { type, uri, method: inputMethod, payload = {} } = action;
 
     // bypass default actions
     if (!inputMethod && !uri) {
       return next(action);
     }
-
-    // if (ignore(state)) {
-    //   return;
-    // }
-
-    // loading start
 
     dispatch({ type, payload });
 

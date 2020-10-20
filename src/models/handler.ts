@@ -2,7 +2,7 @@ import { FetchActionHandlerOptions } from './options';
 import { FetchAction } from './action';
 import { BaseModel, BaseState } from './state';
 
-export interface FetchActionHandler<TModel extends BaseModel, TPayload = {}> {
+export interface FetchActionHandler<TModel extends BaseModel, TPayload = any> {
   options: FetchActionHandlerOptions<TModel>;
   check(action: FetchAction<TPayload>): boolean;
 

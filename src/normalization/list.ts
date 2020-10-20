@@ -24,7 +24,7 @@ export class ListHandler<TModel extends BaseModel, TPayload> extends BaseHandler
   }
 
   protected listFromResponse(state: BaseState<TModel>, action: FetchAction<TPayload>): TModel[] {
-    return this.modify(this.options.flat ? action.response : action.response[this.options.key]).map((i: any) =>
+    return this.modify(this.options.flat ? action.response : action.response[this.options.key!]).map((i: any) =>
       this.options.default ? { ...i, ...this.options.default } : i,
     );
   }
@@ -36,14 +36,14 @@ export class ListHandler<TModel extends BaseModel, TPayload> extends BaseHandler
       ...super.success(state, action),
       db: this.updateDB(state.db, list),
       count: count || list.length,
-      [this.options.stateKey]: list,
+      [this.options.stateKey!]: list,
     };
   }
 
   failure(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...super.failure(state, action),
-      [this.options.stateKey]: null,
+      [this.options.stateKey!]: null,
     };
   }
 }

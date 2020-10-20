@@ -23,7 +23,7 @@ export class PaginatedListHandler<
     const { page, page_size } = action.payload!;
     const { count } = action.response;
     const offset = (page - 1) * page_size;
-    const list = this.options.flat ? action.response : action.response[this.options.key];
+    const list = this.options.flat ? action.response : action.response[this.options.key!];
 
     // let stateList = state[this.options.stateKey] && list.length > 0 ? state[this.options.stateKey].slice(0, count) : [];
     const stateList = state.list && list.length > 0 ? state.list.slice(0, count) : [];

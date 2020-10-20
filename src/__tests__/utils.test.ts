@@ -1,12 +1,11 @@
-import { isClass } from '../utils'
+import { isClass } from '../utils';
 
+class Test {}
 
-class Test {
-  constructor() {}
-}
+// eslint-disable-next-line
 function testFunction() {}
 
 test('Is Class', () => {
-  expect(isClass(Test)).toBe(true)
-  expect(isClass(testFunction)).toBe(false)
-})
+  expect(isClass(Test)).toBe(true);
+  expect(isClass(testFunction)).toBe(false);
+});

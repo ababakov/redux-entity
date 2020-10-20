@@ -1,14 +1,14 @@
 import { BaseState, BaseModel } from './state';
 
-export interface FetchActionHandlerOptions<TModel extends BaseModel> {
+export interface FetchActionHandlerOptions<TModel extends BaseModel = BaseModel> {
   initialState?: BaseState<TModel>;
   defaultOptions?: FetchActionHandlerOptions<TModel>;
   loading?: boolean;
   mixin?: any;
-  type?: string;
-  key: string;
+  type?: string | string[];
+  key?: string;
   error?: string;
-  stateKey: string;
+  stateKey?: string;
   default?: any;
   state?: BaseState<TModel>;
   modifier?: (_: any) => any;

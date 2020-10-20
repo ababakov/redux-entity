@@ -28,7 +28,7 @@ export class ItemHandler<TModel extends BaseModel, TPayload extends BaseItemPayl
   do(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...state,
-      loadingDB: { ...state.loadingDB, [action.payload.id]: true },
+      loadingDB: { ...state.loadingDB, [action.payload!.id]: true },
       error: null,
     };
   }
@@ -48,7 +48,7 @@ export class ItemHandler<TModel extends BaseModel, TPayload extends BaseItemPayl
   failure(state: BaseState<TModel>, action: FetchAction<TPayload>): BaseState<TModel> {
     return {
       ...super.failure(state, action),
-      [this.options.stateKey]: null,
+      [this.options.stateKey!]: null,
     };
   }
 }
