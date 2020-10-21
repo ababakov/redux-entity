@@ -1,4 +1,4 @@
-import { CrudEntity } from '../crud-entity';
+import { CrudEntity, CrudEntityOptions } from '../crud-entity';
 import { MethodType } from '../models/action';
 import { BaseModel } from '../models/state';
 import { BaseHandler } from '../normalization/base';
@@ -12,6 +12,7 @@ export interface RegisteredClass {
   registry?: HandlersRegistry;
   name: string;
   configure?: (arg: any) => any;
+  options: CrudEntityOptions;
 }
 
 function registerReducer<T extends RegisteredClass>(target: T, key: string, Reducer: HandlerType) {
@@ -58,7 +59,7 @@ export function reduxAction(method: MethodType) {
   };
 }
 
-export function action<T extends CrudEntity>(Reducer: HandlerType) {
+export function action<T extends RegisteredClass>(Reducer: HandlerType) {
   return function (target: T, key: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 

@@ -1,7 +1,7 @@
 import { ItemHandler } from './normalization/item';
 import { PaginatedListHandler } from './normalization/paginated-list';
 import { ListHandler } from './normalization/list';
-import { CreateFetchActionReducer } from './normalization/create';
+import { CreateHandler } from './normalization/create';
 import { DeleteHandler } from './normalization/delete';
 
 import { reduxStore } from './decorators/store';
@@ -35,7 +35,7 @@ export class CrudEntity<TModel extends BaseModel = BaseModel> implements Registe
     };
   }
 
-  @post(CreateFetchActionReducer)
+  @post(CreateHandler)
   create(model: TModel) {
     return {
       data: { ...model },
@@ -59,7 +59,7 @@ export class CrudEntity<TModel extends BaseModel = BaseModel> implements Registe
     };
   }
 
-  @patch(CreateFetchActionReducer)
+  @patch(CreateHandler)
   update({ id, ...model }: any, params: any, validate = false) {
     return {
       method: validate ? 'put' : 'patch',
@@ -85,4 +85,4 @@ export class CrudEntity<TModel extends BaseModel = BaseModel> implements Registe
   }
 }
 
-export default reduxStore(CrudEntity);
+export const CrudEntityStore = reduxStore(CrudEntity);

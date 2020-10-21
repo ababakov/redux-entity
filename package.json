@@ -1,6 +1,6 @@
 {
   "name": "redux-yeti",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "small framework to reduce action name generation work for CRUD operations in Restful",
   "main": "dist/index.js",
   "module": "dist/index.js",

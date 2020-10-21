@@ -2,7 +2,7 @@ import { BaseHandler } from './base';
 import { FetchAction } from '../models/action';
 import { BaseModel, BaseState, DB } from '../models/state';
 
-export class CreateFetchActionReducer<TModel extends BaseModel, TPayload> extends BaseHandler<TModel, TPayload> {
+export class CreateHandler<TModel extends BaseModel, TPayload> extends BaseHandler<TModel, TPayload> {
   protected updateDB(db: DB<TModel>, entry: any): DB<TModel> {
     db = db || {};
     db[entry.id] = { ...entry, ...this.options.default };

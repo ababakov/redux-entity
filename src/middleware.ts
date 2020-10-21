@@ -139,9 +139,9 @@ interface FetchMiddlewareOptions {
 
 const defaultOptions: FetchMiddlewareOptions = { buildRequest };
 
-type FetchMiddlewareFunction = (options: FetchMiddlewareOptions) => Middleware;
+type FetchMiddlewareFunction = (options?: FetchMiddlewareOptions) => Middleware;
 
-const middleware: FetchMiddlewareFunction = (options) => {
+export const middleware: FetchMiddlewareFunction = (options) => {
   options = { ...defaultOptions, ...options };
 
   const { buildRequest } = options;
@@ -164,5 +164,3 @@ const middleware: FetchMiddlewareFunction = (options) => {
       .catch(processError(dispatch, { payload, type }));
   };
 };
-
-export default middleware;

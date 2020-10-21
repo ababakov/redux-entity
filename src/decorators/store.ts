@@ -13,8 +13,6 @@ type ActionTypeRegistryItem = {
 export function reduxStore<T extends { new (...args: any[]): RegisteredClass }>(EntityClass: T) {
   const ResultClass = class extends EntityClass implements RegisteredClass {
     types: { [key: string]: string } = {};
-    options: CrudEntityOptions = {};
-    name = '';
 
     reducer() {
       const { permit } = this.options;
